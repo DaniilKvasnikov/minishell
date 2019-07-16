@@ -10,4 +10,10 @@
 // # include <dir.h>
 # include <stdio.h>
 
+typedef struct	s_mydata
+{
+	int			argc;
+	char		**argv;
+}				t_mydata;
+
 #endif
