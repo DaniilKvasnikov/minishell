@@ -3,10 +3,7 @@
 void
 	put_start_shell()
 {
-	char dir[MAXDIR];
-
-	getcwd(dir, MAXDIR);
-	ft_printf("%s:", dir);
+	ft_putstr("$>");
 }
 
 static int		run_cmd(char *path, char **args)
@@ -46,9 +43,7 @@ void
 
 	i = -1;
 	while (envp[++i] != 0)
-	{
 		ft_printf("[%d](%s)\n", i, envp[i]);
-	}
 }
 
 void
@@ -80,15 +75,60 @@ void
 	ft_printf("ls [%s]\n", str);
 }
 
+void
+	start_pwd()
+{
+	char dir[MAXDIR];
+
+	getcwd(dir, MAXDIR);
+	ft_printf("%s\n", dir);
+}
+
+void
+	start_echo(char *str, char **argv)
+{
+	ft_printf("echo [%s]\n", str);
+}
+
+void
+	start_setenv(char *str, char **argv)
+{
+	ft_printf("setenv [%s]\n", str);
+}
+
+void
+	start_unsetenv(char *str, char **argv)
+{
+	ft_printf("unsetenv [%s]\n", str);
+}
+
+void
+	start_env(char *str, char **argv)
+{
+	ft_printf("env [%s]\n", str);
+}
+
 int
 	start_prog(char *str, char **argv)
 {
 	char	*line;
 
-	if (ft_strncmp(line = "cd", str, 2) == 0)
+	if (ft_strncmp(line = "exit", str, 4) == 0)
+		exit(0);
+	else if (ft_strncmp(line = "echo", str, 4) == 0)
+		start_echo(str, argv);
+	else if (ft_strncmp(line = "cd", str, 2) == 0)
 		start_cd(str);
+	else if (ft_strncmp(line = "setenv", str, 6) == 0)
+		start_setenv(str, argv);
+	else if (ft_strncmp(line = "unsetenv", str, 8) == 0)
+		start_unsetenv(str, argv);
+	else if (ft_strncmp(line = "env", str, 8) == 0)
+		start_env(str, argv);
 	else if (ft_strncmp(line = "ls", str, 2) == 0)
 		start_ls(str, argv);
+	else if (ft_strncmp(line = "pwd", str, 3) == 0)
+		start_pwd();
 	else
 		return (0);
 	return (1);
@@ -128,18 +168,15 @@ int
 	char	*line;
 	char	*str;
 
-	print_envp(envp);
-	if (signal(SIGINT, sig_handler) == SIG_ERR)
-		printf("\ncan't catch SIGINT\n");
+	// print_envp(envp);
+	signal(SIGINT, sig_handler);
 	put_start_shell();
 	while (get_next_line(0, &line) == 1)
 	{
 		str = ft_strdup(line);
 		change_str(str);
 		free(line);
-		if (ft_strcmp(str, "exit") == 0)
-			exit(1);
-		if (start_prog(str, argv) == 0)
+		if (ft_strlen(str) > 0 && start_prog(str, argv) == 0)
 		{
 			ft_putstr("command not found\n");
 		}
