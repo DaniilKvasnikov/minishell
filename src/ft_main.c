@@ -6,6 +6,44 @@ void
 	ft_putstr("$>");
 }
 
+char
+	*get_env(char *str, char **envp)
+{
+	int	len;
+	int	i;
+
+	len = ft_strlen(str);
+	i = -1;
+	while (envp[++i] != 0)
+		if (ft_strncmp(str, envp[i], len) == 0)
+			if (envp[i][len] == '=')
+				return (ft_strdup(envp[i] + len + 1));
+	return (NULL);
+}
+
+int
+	ft_get_envp_len(char **envp)
+{
+	int	i;
+
+	i = -1;
+	while (envp[++i] != 0)
+		;
+	return (i);
+}
+
+int
+	ft_get_envp_free(char **envp)
+{
+	int	i;
+
+	i = -1;
+	while (envp[++i] != 0)
+		free(envp[i]);
+	free(envp);
+	return (i);
+}
+
 static int		run_cmd(char *path, char **args)
 {
 	pid_t	pid;
@@ -47,18 +85,25 @@ void
 }
 
 void
-	start_cd(char **strs)
+	start_cd(char **strs, char **envp)
 {
-	int	res;
+	int		res;
+	char	*path;
 	
 	if (ft_strsplit_len(strs) >= 2)
 	{
 		if (ft_strcmp(strs[1], "~") == 0)
-			res = chdir("/Users/rrhaenys");
+			path = get_env("HOME", envp);
+		if (ft_strcmp(strs[1], "-") == 0)
+			path = get_env("OLDPWD", envp);
+		else if (ft_strncmp(strs[1], "$", 1) == 0)
+			path = get_env(strs[1] + 1, envp);
 		else
-			res = chdir(strs[1]);
+			path = ft_strdup(strs[1]);
+		res = chdir(path);
 		if (res != 0)
 			ft_printf("cd: %s: No such file or directory\n", strs[1]);
+		free(path);
 	}
 }
 
@@ -89,20 +134,24 @@ char
 	int		i;
 	int		j;
 	char	**n_envp;
+	char	*str;
 
 	i = -1;
 	while (envp[++i] != 0)
 		if (ft_strncmp(strs[1], envp[i], ft_strlen(strs[1])) == 0)
 		{
+			str = envp[i];
 			envp[i] = ft_strdup(strs[1]);
+			free(str);
 			return (envp);
 		}
 	n_envp = (char **)malloc(sizeof(char *) * (i + 2));
 	i = -1;
 	while (envp[++i] != 0)
 		n_envp[i] = envp[i];
-	n_envp[i] = ft_strdup(strs[1]);
+	n_envp[i] = ft_stradd_3(strs[1], "=", strs[2]);
 	n_envp[i + 1] = 0;
+	ft_get_envp_free(envp);
 	return (n_envp);
 }
 
@@ -116,6 +165,7 @@ void
 	while (envp[++i] != 0)
 		if (ft_strncmp(str, envp[i], ft_strlen(str)) == 0)
 		{
+			free(envp[i]);
 			j = i - 1;
 			while (envp[++j] != 0)
 				envp[j] = envp[j + 1];
@@ -138,7 +188,7 @@ int
 	else if (ft_strncmp(line = "echo", strs[0], 4) == 0)
 		start_echo(strs, mydata->argv);
 	else if (ft_strncmp(line = "cd", strs[0], 2) == 0)
-		start_cd(strs);
+		start_cd(strs, mydata->envp);
 	else if (ft_strncmp(line = "setenv", strs[0], 6) == 0)
 		mydata->envp = start_setenv(strs, mydata->envp);
 	else if (ft_strncmp(line = "unsetenv", strs[0], 8) == 0)
@@ -158,11 +208,16 @@ t_mydata
 	*init_mydata(int argc, char **argv, char **envp)
 {
 	t_mydata	*mydata;
+	int			i;
 
 	mydata = (t_mydata *)malloc(sizeof(t_mydata));
 	mydata->argc = argc;
 	mydata->argv = argv;
-	mydata->envp = envp;
+	mydata->envp = (char **)malloc(sizeof(char *) * (ft_get_envp_len(envp) + 1));
+	i = -1;
+	while (envp[++i] != 0)
+		mydata->envp[i] = ft_strdup(envp[i]);
+	mydata->envp[i] = NULL;
 	return (mydata);
 }
 
@@ -189,6 +244,7 @@ int
 		ft_strsplit_free(strs);
 		free(str);
 	}
+	ft_get_envp_free(mydata->envp);
 	free(mydata);
 	return (0);
 }
