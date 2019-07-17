@@ -20,7 +20,7 @@ SRCS_PATH = src/
 OBJ_PATH  = obj/
 LIBFT_PATH = libft/
 
-FLAGS = #-Wall -Werror -Wextra
+FLAGS = -Wall -Werror -Wextra
 INC = -I ./includes/ -I ./$(LIBFT_PATH)includes/
 
 SRCS_NAME = $(shell ls src | grep -E ".+\.c")
