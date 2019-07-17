@@ -6,7 +6,7 @@
 
 # include "ft_printf.h"
 # include <signal.h>
-# include <wait.h>
+// # include <wait.h>
 // # include <dir.h>
 # include <stdio.h>
 
@@ -14,6 +14,12 @@ typedef struct	s_mydata
 {
 	int			argc;
 	char		**argv;
+	char		**envp;
 }				t_mydata;
+
+
+void		ft_strsplit_print(char **strs);
+void		ft_strsplit_free(char **str);
+int			ft_strsplit_len(char **strs);
 
 #endif

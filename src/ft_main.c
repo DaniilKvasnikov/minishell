@@ -43,36 +43,26 @@ void
 
 	i = -1;
 	while (envp[++i] != 0)
-		ft_printf("[%d](%s)\n", i, envp[i]);
+		ft_printf("%s\n", envp[i]);
 }
 
 void
-	start_cd(char *str)
+	start_cd(char **strs)
 {
-	char	*n_str;
-	int		j;
-
-	n_str = ft_strdup(str);
-	while (n_str[0] != '\0' && n_str[0] != ' ')
-	{		
-		j = -1;
-		while (n_str[++j] != '\0')
-			n_str[j] = n_str[j + 1];
+	int	res;
+	
+	if (ft_strsplit_len(strs) >= 2)
+	{
+		res = chdir(strs[1]);
+		if (res != 0)
+			ft_printf("cd: %s: No such file or directory\n", strs[1]);
 	}
-	j = -1;
-	if (n_str[0] == ' ')	
-		while (n_str[++j] != '\0')
-			n_str[j] = n_str[j + 1];
-	chdir(n_str);
-	ft_printf("cd [%s]\n", n_str);
-	free(n_str);
 }
 
 void
-	start_ls(char *str, char **argv)
+	start_ls(char **str, char **argv)
 {
-	run_cmd("/bin/ls", argv);
-	ft_printf("ls [%s]\n", str);
+	run_cmd("/bin/ls", str);
 }
 
 void
@@ -85,103 +75,117 @@ void
 }
 
 void
-	start_echo(char *str, char **argv)
+	start_echo(char **strs, char **argv)
 {
-	ft_printf("echo [%s]\n", str);
+	run_cmd("/bin/echo", strs);
+}
+
+char
+	**start_setenv(char **strs, char **envp)
+{
+	int		i;
+	int		j;
+	char	**n_envp;
+
+	i = -1;
+	while (envp[++i] != 0)
+		if (ft_strncmp(strs[1], envp[i], ft_strlen(strs[1])) == 0)
+		{
+			envp[i] = ft_strdup(strs[1]);
+			return (envp);
+		}
+	n_envp = (char **)malloc(sizeof(char *) * (i + 2));
+	i = -1;
+	while (envp[++i] != 0)
+		n_envp[i] = envp[i];
+	n_envp[i] = ft_strdup(strs[1]);
+	n_envp[i + 1] = 0;
+	return (n_envp);
 }
 
 void
-	start_setenv(char *str, char **argv)
+	start_unsetenv(char *str, char **envp)
 {
-	ft_printf("setenv [%s]\n", str);
+	int	i;
+	int	j;
+
+	i = -1;
+	while (envp[++i] != 0)
+		if (ft_strncmp(str, envp[i], ft_strlen(str)) == 0)
+		{
+			j = i - 1;
+			while (envp[++j] != 0)
+				envp[j] = envp[j + 1];
+		}
 }
 
 void
-	start_unsetenv(char *str, char **argv)
+	start_env(char **envp)
 {
-	ft_printf("unsetenv [%s]\n", str);
-}
-
-void
-	start_env(char *str, char **argv)
-{
-	ft_printf("env [%s]\n", str);
+	print_envp(envp);
 }
 
 int
-	start_prog(char *str, char **argv)
+	start_prog(char **strs, t_mydata *mydata)
 {
 	char	*line;
 
-	if (ft_strncmp(line = "exit", str, 4) == 0)
+	if (ft_strncmp(line = "exit", strs[0], 4) == 0)
 		exit(0);
-	else if (ft_strncmp(line = "echo", str, 4) == 0)
-		start_echo(str, argv);
-	else if (ft_strncmp(line = "cd", str, 2) == 0)
-		start_cd(str);
-	else if (ft_strncmp(line = "setenv", str, 6) == 0)
-		start_setenv(str, argv);
-	else if (ft_strncmp(line = "unsetenv", str, 8) == 0)
-		start_unsetenv(str, argv);
-	else if (ft_strncmp(line = "env", str, 8) == 0)
-		start_env(str, argv);
-	else if (ft_strncmp(line = "ls", str, 2) == 0)
-		start_ls(str, argv);
-	else if (ft_strncmp(line = "pwd", str, 3) == 0)
+	else if (ft_strncmp(line = "echo", strs[0], 4) == 0)
+		start_echo(strs, mydata->argv);
+	else if (ft_strncmp(line = "cd", strs[0], 2) == 0)
+		start_cd(strs);
+	else if (ft_strncmp(line = "setenv", strs[0], 6) == 0)
+		mydata->envp = start_setenv(strs, mydata->envp);
+	else if (ft_strncmp(line = "unsetenv", strs[0], 8) == 0)
+		start_unsetenv(strs[1], mydata->envp);
+	else if (ft_strncmp(line = "env", strs[0], 8) == 0)
+		start_env(mydata->envp);
+	else if (ft_strncmp(line = "ls", strs[0], 2) == 0)
+		start_ls(strs, mydata->argv);
+	else if (ft_strncmp(line = "pwd", strs[0], 3) == 0)
 		start_pwd();
 	else
 		return (0);
 	return (1);
 }
 
-void
-	change_str(char *str)
+t_mydata
+	*init_mydata(int argc, char **argv, char **envp)
 {
-	int	i;
-	int	j;
+	t_mydata	*mydata;
 
-	while (str[0] != '\0' && str[0] == ' ')
-	{		
-		j = -1;
-		while (str[++j] != '\0')
-		{
-			str[j] = str[j + 1];
-		}
-	}
-	i = -1;
-	while (str[++i] != '\0')
-	{
-		if (str[i] == ' ' && str[i + 1] == ' ')
-		{
-			j = i;
-			while (str[++j] != '\0')
-			{
-				str[j] = str[j + 1];
-			}
-		}
-	}
+	mydata = (t_mydata *)malloc(sizeof(t_mydata));
+	mydata->argc = argc;
+	mydata->argv = argv;
+	mydata->envp = envp;
+	return (mydata);
 }
 
 int
 	main(int argc, char **argv, char **envp)
 {
-	char	*line;
-	char	*str;
+	char		*line;
+	char		*str;
+	char		**strs;
+	t_mydata	*mydata;
 
-	// print_envp(envp);
 	signal(SIGINT, sig_handler);
+	mydata = init_mydata(argc, argv, envp);
 	put_start_shell();
 	while (get_next_line(0, &line) == 1)
 	{
 		str = ft_strdup(line);
-		change_str(str);
+		strs = ft_strsplit(str, ' ');
 		free(line);
-		if (ft_strlen(str) > 0 && start_prog(str, argv) == 0)
-		{
-			ft_putstr("command not found\n");
-		}
+		if (strs[0] != NULL && ft_strlen(strs[0]) > 0)
+			if (start_prog(strs, mydata) == 0)
+				ft_printf("%s: command not found\n", strs[0]);
 		put_start_shell();
+		ft_strsplit_free(strs);
 		free(str);
 	}
+	free(mydata);
 	return (0);
 }
