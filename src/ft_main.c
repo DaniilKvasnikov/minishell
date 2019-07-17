@@ -53,7 +53,10 @@ void
 	
 	if (ft_strsplit_len(strs) >= 2)
 	{
-		res = chdir(strs[1]);
+		if (ft_strcmp(strs[1], "~") == 0)
+			res = chdir("/Users/rrhaenys");
+		else
+			res = chdir(strs[1]);
 		if (res != 0)
 			ft_printf("cd: %s: No such file or directory\n", strs[1]);
 	}
