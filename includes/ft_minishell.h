@@ -21,5 +21,6 @@ typedef struct	s_mydata
 void		ft_strsplit_print(char **strs);
 void		ft_strsplit_free(char **str);
 int			ft_strsplit_len(char **strs);
+char		**ft_strsplit_argv(char const *s, char c);
 
 #endif
