@@ -12,6 +12,6 @@ int		run_cmd(char *path, char **args)
 		ft_putendl("Fork failed to create a new process.");
 		return (-1);
 	}
-	// wait(&pid);
+	wait(&pid);
 	return (1);
 }
