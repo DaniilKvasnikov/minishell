@@ -31,9 +31,32 @@ int
 		start_unsetenv(strs[1], mydata->envp);
 	else if (ft_strncmp("env", strs[0], 8) == 0)
 		print_envp(mydata->envp);
+	else if (ft_strncmp("cd", strs[0], 2) == 0)
+		start_cd(strs, mydata->envp, mydata);
 	else
 		return (0);
 	return (1);
+}
+
+void
+	set_envp_params(char **strs, char **envp)
+{
+	int		i;
+	char	*str;
+
+	i = 0;
+	while (strs[++i] != NULL)
+		if (ft_strncmp(strs[i], "$", 1) == 0)
+		{
+			str = get_env(strs[i] + 1, envp);
+			if (str != NULL)
+			{
+				free(strs[i]);
+				strs[i] = str;
+			}
+			else
+				free(str);
+		}
 }
 
 int
@@ -49,13 +72,18 @@ int
 	if (path == NULL)
 		return (0);
 	char *res = comm_path(strs[0], path);
+	set_envp_params(strs, mydata->envp);
 	if (res == NULL)
 		return (0);
+	else
+		run_cmd(res, strs, mydata->envp);
 	free(res);
+	set_envp("PWD", get_curr_dir(), mydata->envp);
+	return (1);
 	if (ft_strncmp("echo", strs[0], 4) == 0)
 		start_echo(strs, mydata->envp);
-	else if (ft_strncmp("cd", strs[0], 2) == 0)
-		start_cd(strs, mydata->envp, mydata);
+	// else if (ft_strncmp("cd", strs[0], 2) == 0)
+	// 	start_cd(strs, mydata->envp, mydata);
 	else if (ft_strncmp("ls", strs[0], 2) == 0)
 		start_ls(strs, mydata->envp);
 	else if (ft_strncmp("pwd", strs[0], 3) == 0)
