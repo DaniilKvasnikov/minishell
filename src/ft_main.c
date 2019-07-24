@@ -48,8 +48,8 @@ int
 			if (strs[0] != NULL && ft_strlen(strs[0]) > 0)
 			{
 				if ((check_res = check_file(strs[0])) == 1)
-					run_cmd(strs[0], strs);
-				if (start_prog(strs, mydata) == 0 && check_res == 0)
+					run_cmd(strs[0], strs, mydata->envp);
+				else if (check_res != -1 && start_prog(strs, mydata) == 0)
 					ft_printf("%s: command not found\n", strs[0]);
 			}
 			ft_strsplit_free(strs);

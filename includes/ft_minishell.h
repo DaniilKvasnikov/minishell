@@ -22,12 +22,12 @@ int			check_file(char *path);
 char		*get_curr_dir();
 void		sig_handler(int signo);
 void		put_start_shell();
-int			run_cmd(char *path, char **args);
+int			run_cmd(char *path, char **args, char **envp);
 int			start_prog(char **strs, t_mydata *mydata);
 
 void		start_cd(char **strs, char **envp, t_mydata *data);
-void		start_ls(char **str);
-void		start_pwd(char **strs);
+void		start_ls(char **str, char **envp);
+void		start_pwd(char **strs, char **envp);
 void		start_echo(char **strs, char **envp);
 char		**start_setenv(char **strs, char **envp);
 void		start_unsetenv(char *str, char **envp);

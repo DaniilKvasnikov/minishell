@@ -1,15 +1,15 @@
 #include "ft_minishell.h"
 
 void
-	start_ls(char **str)
+	start_ls(char **str, char **envp)
 {
-	run_cmd("/bin/ls", str);
+	run_cmd("/bin/ls", str, envp);
 }
 
 void
-	start_pwd(char **strs)
+	start_pwd(char **strs, char **envp)
 {
-	run_cmd("/bin/pwd", strs);
+	run_cmd("/bin/pwd", strs, envp);
 }
 
 void
@@ -24,7 +24,7 @@ void
 		free(str);
 	}
 	else
-		run_cmd("/bin/echo", strs);
+		run_cmd("/bin/echo", strs, envp);
 }
 
 char

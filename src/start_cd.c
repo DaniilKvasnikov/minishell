@@ -38,10 +38,10 @@ void
 	char	*old_path;
 	
 	old_path = get_curr_dir();
-	if (is_home_dir(strs[1]))
-	{
+	if (strs[1] == NULL)
+		path = get_env("HOME", envp);
+	else if (is_home_dir(strs[1]))
 		path = ft_go_home(strs[1], envp);
-	}
 	else if (ft_strcmp(strs[1], "-") == 0)
 		path = get_env("OLDPWD", envp);
 	else if (ft_strncmp(strs[1], "$", 1) == 0)
