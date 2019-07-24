@@ -1,5 +1,27 @@
 #include "ft_minishell.h"
 
+char
+	*comm_path(char *name, char *path)
+{
+	char	**paths;
+	int		i;
+	char	*res;
+
+	paths = ft_strsplit(path, ':');
+	i = -1;
+	res = NULL;
+	while (paths[++i] != NULL)
+	{
+		res = ft_stradd_3(paths[i], "/", name);
+		if (check_file(res) == 1)
+			break ;
+		free(res);
+		res = NULL;
+	}
+	ft_strsplit_free(paths);
+	return (res);
+}
+
 int
 	start_prog(char **strs, t_mydata *mydata)
 {
@@ -11,7 +33,10 @@ int
 	path = get_env("PATH", mydata->envp);
 	if (path == NULL)
 		return (0);
-	if (ft_strncmp(line = "echo", strs[0], 4) == 0)
+	char *res = comm_path(strs[0], path);
+	if (res != NULL)
+		run_cmd(res, strs);
+	else if (ft_strncmp(line = "echo", strs[0], 4) == 0)
 		start_echo(strs, mydata->envp);
 	else if (ft_strncmp(line = "cd", strs[0], 2) == 0)
 		start_cd(strs, mydata->envp, mydata);

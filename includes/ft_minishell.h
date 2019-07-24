@@ -18,6 +18,7 @@ typedef struct	s_mydata
 	char		**envp;
 }				t_mydata;
 
+int			check_file(char *path);
 char		*get_curr_dir();
 void		sig_handler(int signo);
 void		put_start_shell();
