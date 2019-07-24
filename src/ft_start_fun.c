@@ -20,7 +20,7 @@ void
 	if (ft_strncmp(strs[1], "$", 1) == 0)
 	{
 		str = get_env(strs[1] + 1, envp);
-		ft_printf("get=%s\n", str);
+		ft_printf("%s\n", str);
 		free(str);
 	}
 	else

@@ -18,11 +18,25 @@ t_mydata
 }
 
 int
+	check_file(char *path)
+{
+	if (access(path, F_OK) != 0)
+		return (0);
+	else if (access(path, X_OK) != 0)
+	{
+		ft_printf("You dont have search access to '%s'\n", path);
+		return (-1);
+	}
+	return (1);
+}
+
+int
 	main(int argc, char **argv, char **envp)
 {
 	char		*line;
 	char		**strs;
 	t_mydata	*mydata;
+	int			check_res;
 
 	signal(SIGINT, sig_handler);
 	mydata = init_mydata(argc, argv, envp);
@@ -32,8 +46,12 @@ int
 		if ((strs = ft_strsplit_argv(line, ' ')) != NULL)
 		{
 			if (strs[0] != NULL && ft_strlen(strs[0]) > 0)
-				if (start_prog(strs, mydata) == 0)
+			{
+				if ((check_res = check_file(strs[0])) == 1)
+					run_cmd(strs[0], strs);
+				if (start_prog(strs, mydata) == 0 && check_res == 0)
 					ft_printf("%s: command not found\n", strs[0]);
+			}
 			ft_strsplit_free(strs);
 		}
 		else

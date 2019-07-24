@@ -1,5 +1,10 @@
 #include "ft_minishell.h"
 
+static int	is_space(char c, char nc)
+{
+	return (c == nc || (c >= 9 && c <= 13));
+}
+
 static int	ft_str_count(char const *s, char c)
 {
 	int size;
@@ -7,7 +12,7 @@ static int	ft_str_count(char const *s, char c)
 	size = 0;
 	while (*s != '\0')
 	{
-		if (*s != c || (*(s + 1) == c || *(s + 1) == '\0'))
+		if (!is_space(*s, c) || (is_space(*(s + 1), c) || *(s + 1) == '\0'))
 			size++;
 		s++;
 	}
@@ -19,7 +24,7 @@ static char	*get_fi(char *fi, char c)
 	int	i;
 
 	i = -1;
-	while (fi[++i] != '\0' && fi[i] != c)
+	while (fi[++i] != '\0' && !is_space(fi[i], c))
 	{
 		if (fi[i] == '\'')
 			while (fi[++i] != '\0' && fi[i] != '\'')
@@ -76,7 +81,7 @@ char		**ft_strsplit_argv(char const *s, char c)
 	index = -1;
 	s--;
 	while (*(++s) != '\0')
-		if (*s != c)
+		if (!is_space(*s, c))
 		{
 			res[++index] = ft_str_get(&s, c);
 			if (res[index] == NULL)

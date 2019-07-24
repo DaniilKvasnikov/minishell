@@ -9,6 +9,7 @@
 // # include <wait.h>
 // # include <dir.h>
 # include <stdio.h>
+# include <unistd.h>
 
 typedef struct	s_mydata
 {
