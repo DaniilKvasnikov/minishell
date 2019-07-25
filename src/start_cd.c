@@ -50,7 +50,11 @@ void
 		path = ft_strdup(strs[1]);
 	res = chdir(path);
 	if (res != 0)
-		ft_printf("cd: (%s): No such file or directory\n", path);
+	{
+		ft_putstr_fd("cd: (", 2);
+		ft_putstr_fd(path, 2);
+		ft_putstr_fd("): No such file or directory\n", 2);
+	}
 	else
 		data->envp = set_envp("OLDPWD", old_path, envp);
 	free(old_path);

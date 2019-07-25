@@ -11,17 +11,23 @@
 # include <stdio.h>
 # include <unistd.h>
 
+typedef struct stat		t_stat;
+
 typedef struct	s_mydata
 {
 	int			argc;
 	char		**argv;
 	char		**envp;
+	char		*flags;
 }				t_mydata;
+
+char		*set_flags(int argc, char **argv);
+int			is_flag_ls(char *flags, char flag);
 
 int			check_file(char *path);
 char		*get_curr_dir();
 void		sig_handler(int signo);
-void		put_start_shell();
+void		put_start_shell(t_mydata *mydata);
 int			run_cmd(char *path, char **args, char **envp);
 int			start_prog(char **strs, t_mydata *mydata);
 

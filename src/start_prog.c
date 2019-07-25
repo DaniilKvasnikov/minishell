@@ -65,30 +65,23 @@ int
 	char	*path;
 
 	if (ft_strncmp("exit", strs[0], 4) == 0)
+	{
 		exit(0);
+	}
 	if (env_funs(strs, mydata) == 1)
 		return (1);
 	path = get_env("PATH", mydata->envp);
 	if (path == NULL)
 		return (0);
 	char *res = comm_path(strs[0], path);
+	free(path);
 	set_envp_params(strs, mydata->envp);
 	if (res == NULL)
 		return (0);
 	else
 		run_cmd(res, strs, mydata->envp);
 	free(res);
-	set_envp("PWD", get_curr_dir(), mydata->envp);
-	return (1);
-	if (ft_strncmp("echo", strs[0], 4) == 0)
-		start_echo(strs, mydata->envp);
-	// else if (ft_strncmp("cd", strs[0], 2) == 0)
-	// 	start_cd(strs, mydata->envp, mydata);
-	else if (ft_strncmp("ls", strs[0], 2) == 0)
-		start_ls(strs, mydata->envp);
-	else if (ft_strncmp("pwd", strs[0], 3) == 0)
-		start_pwd(strs, mydata->envp);
-	else
-		return (0);
+	set_envp("PWD", path = get_curr_dir(), mydata->envp);
+	free(path);
 	return (1);
 }

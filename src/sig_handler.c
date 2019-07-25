@@ -6,6 +6,6 @@ void
 	if (signo == SIGINT)
 	{
 		ft_putchar('\n');
-		put_start_shell();
+		put_start_shell(NULL);
 	}
 }
