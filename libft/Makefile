@@ -6,7 +6,7 @@
 #    By: rrhaenys <rrhaenys@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/12/27 14:25:41 by rrhaenys          #+#    #+#              #
-#    Updated: 2019/06/28 16:52:18 by rrhaenys         ###   ########.fr        #
+#    Updated: 2019/07/26 18:15:55 by rrhaenys         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,14 +33,10 @@ OBJ	= $(SRCS:.c=.o) $(LIBFT_SRCS:.c=.o)
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	# @bash -c "echo -en '\r                                 '"
 	@ar rc $(NAME) $(OBJ)
 	@ranlib $(NAME)
 
 .c.o:
-	@printf "\033[1;31m"
-	# @bash -c "echo -en '\r$<                                  '"
-	@printf "\033[0m"
 	@$(COMMAND) $(FLAGS) $(INCLUDE) -g -c -o $@ $<
 
 clean:

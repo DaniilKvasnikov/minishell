@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   start_cd.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rrhaenys <rrhaenys@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/07/26 18:45:30 by rrhaenys          #+#    #+#             */
+/*   Updated: 2019/07/26 19:04:43 by rrhaenys         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "ft_minishell.h"
 
 int
@@ -22,7 +34,7 @@ char
 		ft_set_color(mydata, C_RESET);
 		return (NULL);
 	}
-	if(ft_strlen(new_path) > 2)
+	if (ft_strlen(new_path) > 2)
 	{
 		path_res = ft_stradd_3(path, "/", new_path + 2);
 		free(path);
@@ -32,14 +44,11 @@ char
 	return (path_res);
 }
 
-void
-	start_cd(char **strs, char **envp, t_mydata *data)
+static char
+	*get_path(char **strs, char **envp, t_mydata *data)
 {
-	int		res;
 	char	*path;
-	char	*old_path;
-	
-	old_path = get_curr_dir();
+
 	if (strs[1] == NULL)
 		path = get_env("HOME", envp);
 	else if (is_home_dir(strs[1]))
@@ -50,6 +59,18 @@ void
 		path = get_env(strs[1] + 1, envp);
 	else
 		path = ft_strdup(strs[1]);
+	return (path);
+}
+
+void
+	start_cd(char **strs, char **envp, t_mydata *data)
+{
+	int		res;
+	char	*path;
+	char	*old_path;
+
+	old_path = get_curr_dir();
+	path = get_path(strs, envp, data);
 	res = chdir(path);
 	if (res != 0)
 	{

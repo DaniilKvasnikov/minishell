@@ -1,7 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   start_prog.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rrhaenys <rrhaenys@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/07/26 18:52:59 by rrhaenys          #+#    #+#             */
+/*   Updated: 2019/07/26 18:53:18 by rrhaenys         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "ft_minishell.h"
 
-char
-	*comm_path(char *name, char *path, t_mydata *mydata)
+char	*comm_path(char *name, char *path, t_mydata *mydata)
 {
 	char	**paths;
 	int		i;
@@ -22,8 +33,7 @@ char
 	return (res);
 }
 
-int
-	env_funs(char **strs, t_mydata *mydata)
+int		env_funs(char **strs, t_mydata *mydata)
 {
 	if (ft_strncmp("setenv", strs[0], 6) == 0)
 		mydata->envp = start_setenv(strs, mydata->envp);
@@ -38,8 +48,7 @@ int
 	return (1);
 }
 
-void
-	set_envp_params(char **strs, char **envp)
+void	set_envp_params(char **strs, char **envp)
 {
 	int		i;
 	char	*str;
@@ -59,10 +68,10 @@ void
 		}
 }
 
-int
-	start_prog(char **strs, t_mydata *mydata)
+int		start_prog(char **strs, t_mydata *mydata)
 {
 	char	*path;
+	char	*res;
 
 	if (ft_strncmp("exit", strs[0], 4) == 0)
 		exit(0);
@@ -71,7 +80,7 @@ int
 	path = get_env("PATH", mydata->envp);
 	if (path == NULL)
 		return (0);
-	char *res = comm_path(strs[0], path, mydata);
+	res = comm_path(strs[0], path, mydata);
 	free(path);
 	set_envp_params(strs, mydata->envp);
 	if (res == NULL)

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_strsplit_argv.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rrhaenys <rrhaenys@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/07/26 18:46:18 by rrhaenys          #+#    #+#             */
+/*   Updated: 2019/07/26 18:48:35 by rrhaenys         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "ft_minishell.h"
 
 static int	is_space(char c, char nc)
@@ -75,8 +87,7 @@ char		**ft_strsplit_argv(char const *s, char c)
 	if (s == NULL)
 		return (NULL);
 	size = ft_str_count(s, c);
-	res = (char **)malloc(sizeof(char *) * (size + 1));
-	if (res == NULL)
+	if ((res = (char **)malloc(sizeof(char *) * (size + 1))) == NULL)
 		return (NULL);
 	index = -1;
 	s--;

@@ -1,29 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_set_color.c                                     :+:      :+:    :+:   */
+/*   ft_auto.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rrhaenys <rrhaenys@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/07/26 18:44:48 by rrhaenys          #+#    #+#             */
-/*   Updated: 2019/07/26 18:44:48 by rrhaenys         ###   ########.fr       */
+/*   Created: 2019/07/26 18:38:17 by rrhaenys          #+#    #+#             */
+/*   Updated: 2019/07/26 18:38:21 by rrhaenys         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_minishell.h"
+#ifndef FT_AUTO_H
+# define FT_AUTO_H
 
-void
-	ft_set_color_fd(t_mydata *mydata, char *color, int fd)
-{
-	if (mydata != NULL)
-	{
-		if (is_flag_ls(mydata->flags, 'c'))
-			ft_putstr_fd(color, fd);
-	}
-}
+char *g_character_names[] = {
+	"cd", "echo", "env", "setenv", "unsetenv", "pwd", "exit",
+	"ls", "clear", "emacs", 0
+};
 
-void
-	ft_set_color(t_mydata *mydata, char *color)
-{
-	ft_set_color_fd(mydata, color, 0);
-}
+#endif
