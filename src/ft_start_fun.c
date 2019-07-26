@@ -1,30 +1,40 @@
 #include "ft_minishell.h"
 
 void
-	start_ls(char **str, char **envp)
+	start_ls(char **str, char **envp, t_mydata *mydata)
 {
-	run_cmd("/bin/ls", str, envp);
+	ft_set_color(mydata, C_YELLOW);
+	run_cmd("/bin/ls", str, envp, mydata);
+	ft_set_color(mydata, C_RESET);
 }
 
 void
-	start_pwd(char **strs, char **envp)
+	start_pwd(char **strs, char **envp, t_mydata *mydata)
 {
-	run_cmd("/bin/pwd", strs, envp);
+	ft_set_color(mydata, C_YELLOW);
+	run_cmd("/bin/pwd", strs, envp, mydata);
+	ft_set_color(mydata, C_RESET);
 }
 
 void
-	start_echo(char **strs, char **envp)
+	start_echo(char **strs, char **envp, t_mydata *mydata)
 {
 	char	*str;
 
 	if (ft_strncmp(strs[1], "$", 1) == 0)
 	{
 		str = get_env(strs[1] + 1, envp);
+		ft_set_color(mydata, C_CYAN);
 		ft_printf("%s\n", str);
+		ft_set_color(mydata, C_RESET);
 		free(str);
 	}
 	else
-		run_cmd("/bin/echo", strs, envp);
+	{
+		ft_set_color(mydata, C_CYAN);
+		run_cmd("/bin/echo", strs, envp, mydata);
+		ft_set_color(mydata, C_RESET);
+	}
 }
 
 char

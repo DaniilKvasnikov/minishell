@@ -39,11 +39,15 @@ int
 }
 
 void
-	print_envp(char **envp)
+	print_envp(char **envp, t_mydata *mydata)
 {
 	int	i;
 
 	i = -1;
 	while (envp[++i] != 0)
+	{
+		ft_set_color(mydata, C_MAGNETA);
 		ft_printf("%s\n", envp[i]);
+		ft_set_color(mydata, C_RESET);
+	}
 }

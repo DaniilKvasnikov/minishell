@@ -7,6 +7,6 @@ int
 
 	i = -1;
 	while (strs[++i] != NULL)
-        ;
-    return (i);
+		;
+	return (i);
 }

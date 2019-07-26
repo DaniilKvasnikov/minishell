@@ -19,18 +19,17 @@ t_mydata
 }
 
 int
-	check_file(char *path)
+	check_file(char *path, t_mydata *mydata)
 {
-	char	buf[1024];
-	int		len;
-
 	if (access(path, F_OK) != 0)
 		return (0);
 	else if (access(path, X_OK) != 0)
 	{
+		ft_set_color(mydata, C_RED);
 		ft_putstr_fd("You dont have search access to '", 2);
 		ft_putstr_fd(path, 2);
 		ft_putstr_fd("'\n", 2);
+		ft_set_color(mydata, C_RESET);
 		return (-1);
 	}
 	return (1);
@@ -46,18 +45,24 @@ void
 	{
 		if (strs[0] != NULL && ft_strlen(strs[0]) > 0)
 		{
-			if ((check_res = check_file(strs[0])) == 1)
-				run_cmd(strs[0], strs, mydata->envp);
+			if ((check_res = check_file(strs[0], mydata)) == 1)
+				run_cmd(strs[0], strs, mydata->envp, mydata);
 			else if (check_res != -1 && start_prog(strs, mydata) == 0)
 			{
+				ft_set_color(mydata, C_RED);
 				ft_putstr_fd(strs[0], 2);
 				ft_putstr_fd(": command not found\n", 2);
+				ft_set_color(mydata, C_RESET);
 			}
 		}
 		ft_strsplit_free(strs);
 	}
 	else
+	{
+		ft_set_color(mydata, C_RED);
 		ft_putstr_fd("error input\n", 2);
+		ft_set_color(mydata, C_RESET);
+	}
 	free(line);
 }
 
@@ -75,8 +80,13 @@ void
 		ft_strsplit_free(strs);
 	}
 	else
+	{
+		ft_set_color(mydata, C_RED);
 		ft_putstr_fd("error input\n", 2);
+		ft_set_color(mydata, C_RESET);
+	}
 	free(line);
+	ft_putstr("\r");
 	put_start_shell(mydata);
 }
 

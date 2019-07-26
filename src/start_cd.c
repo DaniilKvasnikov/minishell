@@ -9,7 +9,7 @@ int
 }
 
 char
-	*ft_go_home(char *new_path, char **envp)
+	*ft_go_home(char *new_path, char **envp, t_mydata *mydata)
 {
 	char	*path;
 	char	*path_res;
@@ -17,7 +17,9 @@ char
 	path = get_env("HOME", envp);
 	if (path == NULL)
 	{
+		ft_set_color(mydata, C_RED);
 		ft_printf("HOME dont found\n");
+		ft_set_color(mydata, C_RESET);
 		return (NULL);
 	}
 	if(ft_strlen(new_path) > 2)
@@ -41,7 +43,7 @@ void
 	if (strs[1] == NULL)
 		path = get_env("HOME", envp);
 	else if (is_home_dir(strs[1]))
-		path = ft_go_home(strs[1], envp);
+		path = ft_go_home(strs[1], envp, data);
 	else if (ft_strcmp(strs[1], "-") == 0)
 		path = get_env("OLDPWD", envp);
 	else if (ft_strncmp(strs[1], "$", 1) == 0)
@@ -51,9 +53,11 @@ void
 	res = chdir(path);
 	if (res != 0)
 	{
+		ft_set_color(data, C_YELLOW);
 		ft_putstr_fd("cd: (", 2);
 		ft_putstr_fd(path, 2);
 		ft_putstr_fd("): No such file or directory\n", 2);
+		ft_set_color(data, C_RESET);
 	}
 	else
 		data->envp = set_envp("OLDPWD", old_path, envp);

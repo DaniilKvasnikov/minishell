@@ -19,7 +19,9 @@ NAME = libft.a
 FLAGS = -Wall -Wextra -Werror
 SRC_DIR = src/
 SRC_FIL = $(shell ls src | grep -E "ft_.+\.c")
+SRC_COUNT = $(shell ls src | grep -E "ft_.+\.c" | wc -l)
 SRCS = $(addprefix  $(SRC_DIR), $(SRC_FIL))
+NUM=1
 INCLUDE = -Iincludes
 COMMAND = gcc
 LIBFT_DIR = src/libftr/
@@ -31,10 +33,14 @@ OBJ	= $(SRCS:.c=.o) $(LIBFT_SRCS:.c=.o)
 all: $(NAME)
 
 $(NAME): $(OBJ)
+	@bash -c "echo -en '\r                                 '"
 	@ar rc $(NAME) $(OBJ)
 	@ranlib $(NAME)
 
 .c.o:
+	@printf "\033[1;31m"
+	@bash -c "echo -en '\r$<                                  '"
+	@printf "\033[0m"
 	@$(COMMAND) $(FLAGS) $(INCLUDE) -g -c -o $@ $<
 
 clean:

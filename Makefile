@@ -32,7 +32,7 @@ all: $(NAME)
 
 $(NAME): $(OBJ)
 	@make -w -C $(LIBFT_PATH)
-	@echo "\033[92m$(LIBFT_PATH)\033[0m compiled."
+	@echo "\033[92m\r$(LIBFT_PATH)\033[0m compiled."
 	@gcc $(FLAGS) $(OBJ) $(INC) -L $(LIBFT_PATH) -lft -o $(NAME)
 	@echo "\033[35m$(NAME)\033[0m created."
 

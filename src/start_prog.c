@@ -1,7 +1,7 @@
 #include "ft_minishell.h"
 
 char
-	*comm_path(char *name, char *path)
+	*comm_path(char *name, char *path, t_mydata *mydata)
 {
 	char	**paths;
 	int		i;
@@ -13,7 +13,7 @@ char
 	while (paths[++i] != NULL)
 	{
 		res = ft_stradd_3(paths[i], "/", name);
-		if (check_file(res) == 1)
+		if (check_file(res, mydata) == 1)
 			break ;
 		free(res);
 		res = NULL;
@@ -30,7 +30,7 @@ int
 	else if (ft_strncmp("unsetenv", strs[0], 8) == 0)
 		start_unsetenv(strs[1], mydata->envp);
 	else if (ft_strncmp("env", strs[0], 8) == 0)
-		print_envp(mydata->envp);
+		print_envp(mydata->envp, mydata);
 	else if (ft_strncmp("cd", strs[0], 2) == 0)
 		start_cd(strs, mydata->envp, mydata);
 	else
@@ -65,21 +65,19 @@ int
 	char	*path;
 
 	if (ft_strncmp("exit", strs[0], 4) == 0)
-	{
 		exit(0);
-	}
 	if (env_funs(strs, mydata) == 1)
 		return (1);
 	path = get_env("PATH", mydata->envp);
 	if (path == NULL)
 		return (0);
-	char *res = comm_path(strs[0], path);
+	char *res = comm_path(strs[0], path, mydata);
 	free(path);
 	set_envp_params(strs, mydata->envp);
 	if (res == NULL)
 		return (0);
 	else
-		run_cmd(res, strs, mydata->envp);
+		run_cmd(res, strs, mydata->envp, mydata);
 	free(res);
 	set_envp("PWD", path = get_curr_dir(), mydata->envp);
 	free(path);

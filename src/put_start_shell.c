@@ -9,12 +9,10 @@ void
 	if (mydata != NULL)
 	{
 		path = get_curr_dir();
-		if (is_flag_ls(mydata->flags, 'c'))
-			ft_printf("\033[0;32m");
+		ft_set_color(mydata, C_GREEN);
 		if (is_flag_ls(mydata->flags, 'p'))
 			ft_printf("%s ", path);
-		if (is_flag_ls(mydata->flags, 'c'))
-			ft_printf("\033[0m");
+		ft_set_color(mydata, C_RESET);
 	}
 	ft_putstr("$>");
 	if (path != NULL)
