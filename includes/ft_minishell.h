@@ -12,6 +12,9 @@
 # include <unistd.h>
 # include "ft_printf.h"
 # include "ft_color.h"
+# include <stdlib.h>
+# include <string.h>
+# include <readline/readline.h>
 
 typedef struct stat		t_stat;
 
@@ -22,6 +25,9 @@ typedef struct	s_mydata
 	char		**envp;
 	char		*flags;
 }				t_mydata;
+
+char		**character_name_completion(const char *, int, int);
+char		*character_name_generator(const char *, int);
 
 void		ft_set_color_fd(t_mydata *mydata, char *color, int fd);
 void		ft_set_color(t_mydata *mydata, char *color);

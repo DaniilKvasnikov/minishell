@@ -1,5 +1,38 @@
 #include "ft_minishell.h"
 
+char *character_names[] = {
+	"cd", "echo", "env", "setenv", "unsetenv", "pwd", "exit",
+	"ls", "clear", (char*)NULL
+};
+
+
+char **
+character_name_completion(const char *text, int start, int end)
+{
+	rl_attempted_completion_over = 1;
+	return rl_completion_matches(text, character_name_generator);
+}
+
+char *
+character_name_generator(const char *text, int state)
+{
+	static int list_index, len;
+	char *name;
+
+	if (!state) {
+		list_index = 0;
+		len = strlen(text);
+	}
+
+	while ((name = character_names[list_index++])) {
+		if (strncmp(name, text, len) == 0) {
+			return strdup(name);
+		}
+	}
+
+	return NULL;
+}
+
 t_mydata
 	*init_mydata(int argc, char **argv, char **envp)
 {
@@ -87,7 +120,6 @@ void
 	}
 	free(line);
 	ft_putstr("\r");
-	put_start_shell(mydata);
 }
 
 int
@@ -95,13 +127,47 @@ int
 {
 	char		*line;
 	t_mydata	*mydata;
+	int			res;
+	char		*buffer;
+	char		*str;
+	char		*path;
 
+	rl_readline_name = "minishell";
+	rl_attempted_completion_function = character_name_completion;
 	signal(SIGINT, sig_handler);
 	mydata = init_mydata(argc, argv, envp);
-	put_start_shell(mydata);
-	while (get_next_line(0, &line) == 1)
+	if (!is_flag_ls(mydata->flags, 't'))
 	{
-		more_commands(line, mydata);
+		put_start_shell(mydata);
+		while ((res = get_next_line(0, &line)) != -1)
+		{
+			if (res == 1)
+				more_commands(line, mydata);
+			else
+				ft_putendl("");
+			put_start_shell(mydata);
+		}
+	}
+	else
+	{
+		while (42)
+		{
+			if (!is_flag_ls(mydata->flags, 'p'))
+				path = ft_strdup("$>");
+			else
+			{
+				path = get_curr_dir();
+				str = ft_stradd_3(C_BLUE, path, C_RESET);
+				free(path);
+				path = ft_stradd_3(str, " ", "$>");
+				free(str);
+			}
+			if ((buffer = readline(path)) != NULL)
+				more_commands(buffer, mydata);
+			else
+				ft_putendl("");
+			free(path);
+		}
 	}
 	ft_get_envp_free(mydata->envp);
 	free(mydata->flags);
