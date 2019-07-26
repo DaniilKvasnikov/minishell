@@ -21,12 +21,12 @@ character_name_generator(const char *text, int state)
 
 	if (!state) {
 		list_index = 0;
-		len = strlen(text);
+		len = ft_strlen(text);
 	}
 
 	while ((name = character_names[list_index++])) {
-		if (strncmp(name, text, len) == 0) {
-			return strdup(name);
+		if (ft_strncmp(name, text, len) == 0) {
+			return ft_strdup(name);
 		}
 	}
 

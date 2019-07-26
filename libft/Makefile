@@ -33,18 +33,20 @@ OBJ	= $(SRCS:.c=.o) $(LIBFT_SRCS:.c=.o)
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	@bash -c "echo -en '\r                                 '"
+	# @bash -c "echo -en '\r                                 '"
 	@ar rc $(NAME) $(OBJ)
 	@ranlib $(NAME)
 
 .c.o:
 	@printf "\033[1;31m"
-	@bash -c "echo -en '\r$<                                  '"
+	# @bash -c "echo -en '\r$<                                  '"
 	@printf "\033[0m"
 	@$(COMMAND) $(FLAGS) $(INCLUDE) -g -c -o $@ $<
 
 clean:
 	@/bin/rm -f $(OBJ)
+	@/bin/rm -f src/*.o
+	@/bin/rm -f src/libftr/*.o
 
 fclean: clean
 	@/bin/rm -f $(NAME)
